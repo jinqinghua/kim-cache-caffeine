@@ -1,8 +1,12 @@
 package com.example.democachecaffeine.user;
 
-import lombok.Data;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Builder
+@Getter
+@Setter
 public class User {
     private Long id;
     private String name;
