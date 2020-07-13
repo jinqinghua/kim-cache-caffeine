@@ -1,4 +1,4 @@
-package com.example.democachecaffeine.config;
+package kim.demo.cachecaffeine.config;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.Ticker;
