@@ -7,7 +7,6 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -20,16 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @CacheConfig(cacheNames = "usersCache")
 @Service
 public class UserService {
-    private static Map<Long, User> usersStore = new ConcurrentHashMap<>(16);
-
-    @PostConstruct
-    public void init() {
-        usersStore.computeIfAbsent(1L, k -> User.builder().id(k).name("name1").age(21).build());
-        usersStore.computeIfAbsent(2L, k -> User.builder().id(k).name("name2").age(22).build());
-        usersStore.computeIfAbsent(3L, k -> User.builder().id(k).name("name3").age(23).build());
-        usersStore.computeIfAbsent(4L, k -> User.builder().id(k).name("name4").age(24).build());
-        usersStore.computeIfAbsent(5L, k -> User.builder().id(k).name("name5").age(25).build());
-    }
+    private static final Map<Long, User> usersStore = new ConcurrentHashMap<>();
 
     @Cacheable
     public List<User> listUsers() {
@@ -44,8 +34,8 @@ public class UserService {
     }
 
     @CachePut(key = "#user.id")
-    public void createUser(User user) {
-        usersStore.put(user.getId(), user);
+    public User createUser(User user) {
+        return usersStore.put(user.getId(), user);
     }
 
     @CachePut(key = "#id")

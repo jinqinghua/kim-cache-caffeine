@@ -21,18 +21,31 @@ public class CacheController {
     @Autowired
     private UserService userService;
 
+    @GetMapping(path = "/{cacheName}")
+    public ResponseEntity<String> listByName(@PathVariable String cacheName) {
+        Cache cache = cacheManager.getCache(cacheName);
+
+        logCacheDetails(cache);
+
+        return ResponseEntity.ok().body("OK");
+    }
+
     @GetMapping(path = "/{cacheName}/{key}")
     public ResponseEntity<User> listByName(@PathVariable String cacheName, @PathVariable Long key) {
         log.info("cacheNames is {}", cacheManager.getCacheNames());
         Cache cache = cacheManager.getCache(cacheName);
         log.info("cache name is {}", cache.getName());
 
-        com.github.benmanes.caffeine.cache.Cache caffeineCache = (com.github.benmanes.caffeine.cache.Cache) cache.getNativeCache();
-        caffeineCache.asMap().forEach((k, v) -> log.info("k={};v={}", k, v));
+        logCacheDetails(cache);
 
         // 手动从 cache 中取缓存数据，如果没有，则用 Service 取
         User user = cache.get(key, () -> userService.getUserById(key));
         return ResponseEntity.ok(user);
+    }
+
+    private void logCacheDetails(Cache cache) {
+        com.github.benmanes.caffeine.cache.Cache caffeineCache = (com.github.benmanes.caffeine.cache.Cache) cache.getNativeCache();
+        caffeineCache.asMap().forEach((k, v) -> log.info("k={};v={}", k, v));
     }
 
 }

@@ -25,9 +25,15 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserById(id));
     }
 
+//    @PostMapping
+//    public ResponseEntity postUser(@RequestBody User user) {
+//        userService.createUser(user);
+//        return ResponseEntity.created(null).build();
+//    }
+
     @PostMapping
-    public ResponseEntity postUser(@RequestBody User user) {
-        userService.createUser(user);
+    public ResponseEntity postUser(@RequestBody List<User> users) {
+        users.stream().forEach(user -> userService.createUser(user));
         return ResponseEntity.created(null).build();
     }
 
