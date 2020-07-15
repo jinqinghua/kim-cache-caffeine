@@ -44,7 +44,7 @@ public class CacheController {
     }
 
     @GetMapping(path = "/{cacheName}")
-    public ResponseEntity<Map<Object, Object>> listByName(@PathVariable String cacheName) {
+    public ResponseEntity<Map<Object, Object>> listByCacheName(@PathVariable String cacheName) {
         Map<Object, Object> map = new HashMap<>();
         Cache cache = cacheManager.getCache(cacheName);
         setNativeCacheDetails(cache, map);
@@ -52,7 +52,7 @@ public class CacheController {
     }
 
     @GetMapping(path = "/{cacheName}/{key}")
-    public ResponseEntity<Map<Object, Object>> listByName(@PathVariable String cacheName, @PathVariable Object key) {
+    public ResponseEntity<Map<Object, Object>> listByCacheKey(@PathVariable String cacheName, @PathVariable Object key) {
         Map<Object, Object> map = new HashMap<>();
         Cache cache = cacheManager.getCache(cacheName);
         map.put(key, cache.get(key));
