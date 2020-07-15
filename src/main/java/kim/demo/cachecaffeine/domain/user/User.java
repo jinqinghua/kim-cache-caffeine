@@ -1,4 +1,4 @@
-package kim.demo.cachecaffeine.user;
+package kim.demo.cachecaffeine.domain.user;
 
 import lombok.Builder;
 import lombok.Getter;

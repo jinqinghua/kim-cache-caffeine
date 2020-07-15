@@ -1,4 +1,4 @@
-package kim.demo.cachecaffeine.config;
+package kim.demo.cachecaffeine.configuration;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.Ticker;
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @EnableCaching
 public class CachingConfiguration extends CachingConfigurerSupport {
 
-    @Bean
+    @Bean(name = "cacheSpec")
     @ConfigurationProperties(prefix = "cache.spec")
     public Map<String, String> cacheSpec() {
         return new HashMap<>();
