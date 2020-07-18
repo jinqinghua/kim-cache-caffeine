@@ -1,4 +1,4 @@
-package kim.demo.cachecaffeine.domain.cache;
+package kim.cachecaffeine.domain.cache;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

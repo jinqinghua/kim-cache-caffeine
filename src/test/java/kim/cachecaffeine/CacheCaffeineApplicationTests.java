@@ -1,10 +1,10 @@
-package kim.demo.cachecaffeine;
+package kim.cachecaffeine;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class DemoCacheCaffeineApplicationTests {
+class CacheCaffeineApplicationTests {
 
     @Test
     void contextLoads() {

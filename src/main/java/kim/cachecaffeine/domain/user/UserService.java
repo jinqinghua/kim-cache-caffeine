@@ -1,4 +1,4 @@
-package kim.demo.cachecaffeine.domain.user;
+package kim.cachecaffeine.domain.user;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheConfig;
