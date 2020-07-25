@@ -19,7 +19,8 @@ public Book findBook(ISBN isbn, boolean checkWarehouse, boolean includeUsed)
 - Spring Cache 是使用 AOP 实现的，需要 aop 相关的依赖
 - 正因为使用了AOP, 以下的 case，要能缓存不生效
 ```
-外部调用了一个类 Class1 里的 method1 (无缓存), method1 又调用了本类里的 method2
+外部调用了一个类 Class1 里的 method1 (无缓存), method1 又调用了本类里的 method2 (有缓存)
 invoker -> Class1.method1 -> Class1.method2
-这时缓存不生效
+这时缓存不生效，解决的办法是将 2 个方法重构到不同的类里
+实际项目中最好建立一个 cache deledate 类和处理缓存
 ```
