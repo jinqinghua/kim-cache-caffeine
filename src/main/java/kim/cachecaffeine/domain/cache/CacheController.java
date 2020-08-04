@@ -33,11 +33,8 @@ public class CacheController {
         List<Map<Object, Object>> list = new ArrayList<>();
 
         cacheSpec.forEach((k, v) -> {
-            Map<Object, Object> map = new HashMap<>();
-            map.put(k, v);
             Cache cache = cacheManager.getCache(k);
-            setNativeCacheDetails(cache, map);
-            list.add(map);
+            list.add(getCacheDetails(cache));
         });
 
         return ResponseEntity.ok().body(list);
@@ -45,25 +42,42 @@ public class CacheController {
 
     @GetMapping(path = "/{cacheName}")
     public ResponseEntity<Map<Object, Object>> listByCacheName(@PathVariable String cacheName) {
-        Map<Object, Object> map = new HashMap<>();
         Cache cache = cacheManager.getCache(cacheName);
-        setNativeCacheDetails(cache, map);
-        return ResponseEntity.ok().body(map);
+        return ResponseEntity.ok().body(getCacheDetails(cache));
     }
 
     @GetMapping(path = "/{cacheName}/{key}")
     public ResponseEntity<Map<Object, Object>> listByCacheKey(@PathVariable String cacheName, @PathVariable Object key) {
-        Map<Object, Object> map = new HashMap<>();
         Cache cache = cacheManager.getCache(cacheName);
-        map.put(key, cache.get(key));
-        return ResponseEntity.ok().body(map);
+        return ResponseEntity.ok().body(getCacheDetails(cache, key));
     }
 
-    private void setNativeCacheDetails(Cache cache, Map<Object, Object> map) {
-        com.github.benmanes.caffeine.cache.Cache caffeineCache = (com.github.benmanes.caffeine.cache.Cache) cache.getNativeCache();
-        caffeineCache.asMap().forEach((k, v) -> map.put(k, cache.get(k)));
-        map.put("estimatedSize", caffeineCache.estimatedSize());
-        map.put("stats", caffeineCache.stats().toString());
+    private Map<Object, Object> getCacheDetails(Cache cache) {
+        return getCacheDetails(cache, null);
+    }
+
+    private Map<Object, Object> getCacheDetails(Cache cache, Object key) {
+        Object nativeCache = cache.getNativeCache();
+
+        Map<Object, Object> detailsMap = new HashMap<>();
+        if (nativeCache instanceof com.github.benmanes.caffeine.cache.Cache) {
+            com.github.benmanes.caffeine.cache.Cache nativeCaffeineCache = (com.github.benmanes.caffeine.cache.Cache) nativeCache;
+
+            nativeCaffeineCache.asMap().forEach((k, v) -> {
+                if (null == key) {
+                    detailsMap.put(k, nativeCaffeineCache.getIfPresent(k));
+                } else {
+                    if (key.equals(k)) {
+                        detailsMap.put(k, nativeCaffeineCache.getIfPresent(k));
+                    }
+                }
+            });
+
+            detailsMap.put("estimatedSize", nativeCaffeineCache.estimatedSize());
+            detailsMap.put("policy", nativeCaffeineCache.policy().toString());
+            detailsMap.put("stats", nativeCaffeineCache.stats().toString());
+        }
+        return detailsMap;
     }
 
 }

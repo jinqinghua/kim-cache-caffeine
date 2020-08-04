@@ -7,6 +7,8 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.caffeine.CaffeineCache;
+import org.springframework.cache.interceptor.CacheErrorHandler;
+import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +20,7 @@ import java.util.stream.Collectors;
 
 @Configuration
 @EnableCaching
-public class CachingConfiguration extends CachingConfigurerSupport {
+public class CaffeineCacheConfiguration extends CachingConfigurerSupport {
 
     @Bean(name = "cacheSpec")
     @ConfigurationProperties(prefix = "cache.spec")
@@ -39,13 +41,21 @@ public class CachingConfiguration extends CachingConfigurerSupport {
     }
 
     private CaffeineCache buildCache(String name, String spec, Ticker ticker) {
-        return new CaffeineCache(name, Caffeine.from(spec)
-                .ticker(ticker).recordStats()
-                .build());
+        return new CaffeineCache(name, Caffeine.from(spec).ticker(ticker).recordStats().build(), false);
     }
 
     @Bean
     public Ticker ticker() {
         return Ticker.systemTicker();
+    }
+
+    @Bean
+    public KeyGenerator keyGenerator() {
+        return new CustomKeyGenerator0();
+    }
+
+    @Bean
+    public CacheErrorHandler cacheErrorHandler() {
+        return new CustomCacheErrorHandler();
     }
 }

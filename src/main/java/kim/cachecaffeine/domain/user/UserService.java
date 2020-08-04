@@ -23,19 +23,20 @@ public class UserService {
 
     @Cacheable
     public List<User> listUsers() {
-        log.info("Load user from usersStore...");
+        log.info("--->Load user from usersStore...");
         return new ArrayList<>(usersStore.values());
     }
 
-    @Cacheable(key = "#id")
+    @Cacheable(key = "#id", sync = true, condition = "#result != null")
     public User getUserById(Long id) {
-        log.info("Load user from usersStore...");
+        log.info("--->Load user from usersStore...");
         return usersStore.get(id);
     }
 
     @CachePut(key = "#user.id")
     public User createUser(User user) {
-        return usersStore.put(user.getId(), user);
+        usersStore.put(user.getId(), user);
+        return user; // Do NOT code as: return usersStore.put(user.getId(), user);
     }
 
     @CachePut(key = "#id")
@@ -47,7 +48,7 @@ public class UserService {
         return u;
     }
 
-    @CacheEvict(key = "#id")
+    @CacheEvict(key = "#id", beforeInvocation = true)
     public void deleteUser(Long id) {
         usersStore.remove(id);
     }
